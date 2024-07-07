@@ -18,6 +18,10 @@ export class UserRepository {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
+  async findOneByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({ where: { email } });
+  }
+
   async update(id: number, data: Prisma.UserUpdateInput): Promise<User> {
     return this.prisma.user.update({ where: { id }, data });
   }

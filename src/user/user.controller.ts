@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Body, Logger, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto } from './dtos/createUser.dto';
+import { CreateUserDto } from './dto/createUser.dto';
 import { ZodPipe } from 'src/pipes/zod.pipe';
 import { createUserSchema } from './zodSchemas/create-user.zod';
 import { CreateUserResponse } from './responses/create-user.response';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @ApiTags('users')
 @Controller('users')
@@ -14,6 +15,7 @@ export class UserController {
   private logger = new Logger(UserController.name);
 
   @Get()
+  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get all Users' })
   @ApiResponse({ status: 200, description: 'Return all users.' })
   async getUsers() {

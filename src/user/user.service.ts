@@ -23,4 +23,8 @@ export class UserService {
 
     return this.userRepository.create({ email, name, password });
   }
+
+  async findOneByEmail(email: string): Promise<User | null> {
+    return this.userRepository.findOneByEmail(email);
+  }
 }
