@@ -3,6 +3,7 @@ import { JwtService as NestJwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from 'src/jwt/jwt.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -10,6 +11,7 @@ export class AuthService {
     private readonly nestJwtService: NestJwtService,
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async generateTokens(
@@ -32,17 +34,25 @@ export class AuthService {
   }
 
   async generateAccessToken(userId: number) {
+    const accessTokenSecret = await this.configService.get<string>(
+      'ACCESS_TOKEN_SECRET',
+    );
+
     const payload = { userId };
     return this.nestJwtService.signAsync(payload, {
-      secret: 'yourAccessTokenSecret',
+      secret: accessTokenSecret,
       expiresIn: '7d',
     });
   }
 
   async generateRefreshToken(userId: number) {
+    const refreshTokenSecret = await this.configService.get<string>(
+      'REFRESH_TOKEN_SECRET',
+    );
+
     const payload = { userId };
     return this.nestJwtService.signAsync(payload, {
-      secret: 'yourRefreshTokenSecret',
+      secret: refreshTokenSecret,
       expiresIn: '21d',
     });
   }
